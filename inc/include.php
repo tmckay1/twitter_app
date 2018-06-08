@@ -16,6 +16,12 @@ if(isset($_GET['dbg'])){
 	define("DEBUG_MODE",0);
 }
 
+//setup config
+require DOCROOT . '/inc/config.php';
+
+//setup vendor
+require DOCROOT . '/twitter/vendor/autoload.php';
+
 // Setup auto load for load the class files without manually include file by file.
 require DOCROOT . '/inc/vendor/Autoload.php';
 $Autoload = new \Vendor\Autoload();

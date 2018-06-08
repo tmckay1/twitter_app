@@ -3,6 +3,7 @@ namespace Twitter\Views\Form;
 
 use Twitter\Views\SingularView;
 use Twitter\Views\SingularContentView;
+use Twitter\Views\Form\Select;
 
 
 
@@ -39,6 +40,7 @@ class Form extends SingularContentView{
 	function __construct($id, $options = array()){
 		parent::__construct($id, $options);
 		$this->inputs = isset($options['inputs']) ? $options['inputs'] : array();
+		$this->tag    = "form";
 	}
 
 
@@ -105,6 +107,14 @@ class Form extends SingularContentView{
 
 		//for not just assume we only have "input" and "button" types so it is quicker
 		switch ($type) {
+			case "select":
+				$id             = isset($options['attributes']) && isset($options['attributes']['id']) ? $options['attributes']['id'] : "";
+				if(isset($options['attributes'])){ unset($options['attributes']['id']);}
+				$options['tag'] = $type;
+				$input          = new Select($id, $options);
+				$inputHtml      = $input->getView();
+				break;
+			case "div":
 			case "button":
 				$id             = isset($options['attributes']) && isset($options['attributes']['id']) ? $options['attributes']['id'] : "";
 				if(isset($options['attributes'])){ unset($options['attributes']['id']);}

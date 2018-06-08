@@ -1,16 +1,10 @@
 <?php
 require_once("./inc/include.php");
 
+//initialize home page
 $page = new \Twitter\Pages\Home\HomePage();
 $debugger->debug($page);
-$debugger->debug(array('h' => 6));
 
+//draw home page
 $page->drawContents();
 
-?>
-
-<script type="text/javascript">
-	$(document).ready(function(){
-		console.log("hello world");
-	});
-</script>

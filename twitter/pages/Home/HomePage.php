@@ -44,7 +44,11 @@ class HomePage extends Page{
 	 * @return array Initialized in the constructor
 	 */
 	protected function getJs(){
-		return array();
+		return array(
+				INCROOT."/js/twitter/TwitterSearchParser.js",
+				INCROOT."/js/twitter/TwitterSearchRequest.js",
+				INCROOT."/js/home/home.js",
+			);
 	}
 
 }
