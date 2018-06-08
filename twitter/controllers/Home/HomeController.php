@@ -138,23 +138,4 @@ class HomeController extends BaseController {
 		return  $carHtml.$grayHtml.$jumboHtml.$searchHtml.$resultsHtml;
 	}
 
-
-
-	/**
-	 * Search Twitter from the GET parameters
-	 *
-	 * Parameters:
-	 *  username       - Username to search for
-	 *  searchTerm     - Term to search for
-	 *  searchLocation - Location to search in
-	 *  numberOfTweets - Number of tweets to return
-	 */
-	public function searchTwitter(){
-
-		$connection = new \Abraham\TwitterOAuth\TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, APP_ACCESS_TOKEN, APP_ACCESS_TOKEN_SECRET);
-		$statuses   = $connection->get("search/tweets", ["from" => "realDonaldTrump"]);
-
-		return $statuses;
-	}
-
 }

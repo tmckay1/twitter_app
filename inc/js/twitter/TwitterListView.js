@@ -13,27 +13,27 @@ class TwitterListView {
 	 * @param array tweets Collection of TwitterTweet objects
 	 */
 	constructor(tweets){
-		this.tweets = tweets;
+		this.tweets   = tweets;
 	}
 
 
 
 	/**
-	 * Get the view
+	 * Append the list view to a given view
 	 *
-	 * @return string List View
+	 * @param string viewId Id of the view to append the html to
 	 */
-	getView(){
+	appendToView(viewId){
 
 		var view = "";
 
 		//append a row of a single tweet view to our view for each tweet we have
 		this.tweets.forEach(function(tweet){
-			var tweetView = new TwitterCardView(tweet);
-			view += "<div class='row'><div class='col'>" + tweetView.getView() + "</div></div>";
+			tweetView = new TwitterCardView(tweet);
+			view     += "<div class='row'><div class='col'>" + tweetView.getView() + "</div></div>";
 		});
-
-		return view;
+		
+		$('#'+viewId).append(view);
 	}
 }
 
@@ -54,7 +54,7 @@ class TwitterCardView {
 	 * @param TwitterTweet tweet The tweet object to create a view for
 	 */
 	constructor(tweet){
-		this.tweets = tweets;
+		this.tweet = tweet;
 	}
 
 
@@ -65,11 +65,36 @@ class TwitterCardView {
 	 * @return string Card View
 	 */
 	getView(){
+		return "";
+	}
+}
 
-		var view = "";
+
+/**
+ * @class TwitterEmbededView
+ *
+ * Represents an embeded view we received from Twitter
+ */
+class TwitterEmbededView {
 
 
-		return view;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param string html The tweet html for this view
+	 */
+	constructor(html){
+		this.html = html;
+	}
+
+
+
+	/**
+	 * Get the embeded view
+	 */
+	getView(){
+		return "<div class='row'><div class='col'>" + this.html + "</div></div>";
 	}
 }
 

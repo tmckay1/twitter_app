@@ -45,6 +45,10 @@ class HomePage extends Page{
 	 */
 	protected function getJs(){
 		return array(
+				INCROOT."/js/twitter/TwitterInclude.js",
+				INCROOT."/js/twitter/TwitterTweet.js",
+				INCROOT."/js/twitter/TwitterSearchResponse.js",
+				INCROOT."/js/twitter/TwitterListView.js",
 				INCROOT."/js/twitter/TwitterSearchParser.js",
 				INCROOT."/js/twitter/TwitterSearchRequest.js",
 				INCROOT."/js/home/home.js",

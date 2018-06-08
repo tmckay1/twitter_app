@@ -42,8 +42,8 @@ class TwitterSearchRequest {
 							"searchTerm"     : this.searchTerm, 
 							"searchLocation" : this.searchLocation,
 							"numberOfTweets" : this.numberOfTweets,
-							"path"           : "Home",
-							"controller"     : "Home",
+							"path"           : "Twitter",
+							"controller"     : "Search",
 							"action"         : "searchTwitter"
 							};
 		$.getJSON(requestURL, requestData, function(data){
@@ -54,7 +54,7 @@ class TwitterSearchRequest {
 				this.response = new TwitterSearchResponse(error, null);
 			}
 		}).fail(function(){
-			error         = new TwitterSearchError(0, "Failed to send request, no network connection.");
+			error         = new TwitterSearchError(0, "Failed to send request, no network connection or the server is unavailable at this time.");
 			this.response = new TwitterSearchResponse(error, null);
 		}).always(function(){
 			callback(this.response);
@@ -65,46 +65,60 @@ class TwitterSearchRequest {
 
 
 /**
- * @class TwitterSearchResponse
+ * @class TwitterTweetEmbedRequest
  *
- * This class encapulates a search response from the twitter API
+ * This class encapsulates a request to retrieve embeded tweets
  */
-class TwitterSearchResponse {
+class TwitterTweetEmbedRequest {
 
 
 
 	/**
 	 * Default constructor
 	 *
-	 * @param TwitterSearchError searchError  Error from the response, if any
-	 * @param Object             responseData Raw response data
+	 * @param TwitterTweet tweet The username to search for in the API
 	 */
-	constructor(searchError, responseData){
-		this.searchError  = searchError;  
-		this.responseData = responseData; 
+	constructor(tweet){
+		this.tweet = tweet;
 	}
-}
-
-
-
-/**
- * @class TwitterSearchError
- *
- * Represents an error received from the API
- */
-class TwitterSearchError {
 
 
 
 	/**
-	 * Default constructor
+	 * Send the search request
 	 *
-	 * @param int    errorCode Error code, means nothing for now, can be expanded upon
-	 * @param string errorMsg  User friendly message explaining error
+	 * @return TwitterSearchResponse
 	 */
-	constructor(errorCode, errorMsg){
-		this.errorCode = errorCode;
-		this.errorMsg  = errorMsg;
+	sendRequest(callback){
+
+		if(!this.tweet.url){
+			return;
+		}
+
+		//set default response
+		var error     = new TwitterSearchError(0, "An unexpected error occurred.");
+		this.response = new TwitterSearchResponse(error, null);
+
+		var requestURL  = '/km/fw/index.php';
+		var requestData = {
+							"path"           : "Twitter",
+							"controller"     : "Search",
+							"action"         : "getEmbededTweet",
+							"url"            : "https://twitter.com/interior/status/507185938620219395"
+							};
+		$.getJSON(requestURL, requestData, function(data){
+			if(data.STATUS == "OK"){
+				this.response = new TwitterSearchResponse(null, data.MSG);
+			}else{
+				error         = new TwitterSearchError(0, data.MSG);
+				this.response = new TwitterSearchResponse(error, null);
+			}
+		}).fail(function(){
+			error         = new TwitterSearchError(0, "Failed to send request, no network connection or the server is unavailable at this time.");
+			this.response = new TwitterSearchResponse(error, null);
+		}).always(function(){
+			callback(this.response);
+		});
 	}
 }
 

@@ -13,3 +13,7 @@ div.jumbotron {
 .white {
 	color: white;
 }
+
+.center-frame{
+	margin: 0 auto;
+}

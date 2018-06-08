@@ -27,3 +27,7 @@
 .jumbotron hr {
 	border-top-color: black; 
 }
+
+iframe.twitter-tweet {
+	margin: 0 auto;
+}

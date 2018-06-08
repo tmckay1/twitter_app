@@ -26,21 +26,6 @@ function setupTwitterSearchForm(){
 		if(!twitter_numberOfTweets || twitter_numberOfTweets == ""){ displayError("No number of tweets to display! Fill out the number of tweets to display to continue."); return false;}
 		if(!twitter_location       || twitter_location       == ""){ displayError("No location! Fill out the location to search these tweets to continue."); return false;}
 
-		//initialize the request and callback 
-		var callback = function(response){ 
-
-			//something is horribly wrong
-			if(!response){ displayError("Something went horribly wrong. Please try again later. Sorry."); return false;}
-
-			//check response
-			if(response.searchError){ displayError(response.searchError.errorMsg); return false;}
-
-			//parse raw data and handle response
-			var parser = new TwitterSearchParser(response.responseData);
-			var tweets = parser.getTweets();
-
-			console.log(tweets);
-		}
 		var request  = new TwitterSearchRequest(twitter_username, twitter_searchTerm, twitter_location, twitter_numberOfTweets);
 		request.sendRequest(callback);
 
@@ -48,6 +33,55 @@ function setupTwitterSearchForm(){
 	});
 }
 
+var resultsContainerId = "twitter_resultsContainer";
+
+//initialize the callback for the search request
+var callback = function(response){ 
+
+	//something is horribly wrong
+	if(!response){ displayError("Something went horribly wrong. Please try again later. Sorry."); return false;}
+
+	//check response
+	if(response.searchError){ displayError(response.searchError.errorMsg); return false;}
+
+	//parse raw data
+	var parser   = new TwitterSearchParser(response.responseData);
+	var tweets   = parser.getTweets();
+
+	//handle response by filling in the view
+	$('#'+resultsContainerId).html();
+	tweets.forEach(function(tweet){
+		var embedRequest = new TwitterTweetEmbedRequest(tweet);
+		embedRequest.sendRequest(embedCallback);
+	});
+
+	console.log(tweets);
+}
+
+//initialize the callback for the embed request
+var embedCallback = function(response){
+
+	//something is horribly wrong
+	if(!response){ displayError("Something went horribly wrong. Please try again later. Sorry."); return false;}
+
+	//check response
+	if(response.searchError){ displayError(response.searchError.errorMsg); return false;}
+
+	//parse the raw data and append the view to our existing view
+	var parser    = new TwitterEmbedSearchParser(response.responseData);
+	var tweetHtml = parser.getTweetHtml();
+	var embededView = new TwitterEmbededView(tweetHtml);
+	$('#'+resultsContainerId).append(embededView.getView());
+
+	//initialize embed
+	twttr.widgets.load(document.getElementById("#"+resultsContainerId));
+}
+
+
+
+/**
+ * Display the error message to the screen
+ */
 function displayError(errorMsg){
 
 	//generate error div
