@@ -9,6 +9,7 @@ error_reporting(E_ALL);
 define("WEBROOT","http://".$_SERVER['SERVER_NAME'].'/km');
 define("INCROOT", WEBROOT.'/inc');
 define("IMGROOT", INCROOT.'/img');
+define("LOADING_ICON", "<img src='".IMGROOT."/loading.gif' style='display:block;margin: 0 auto;'>");
 define("DOCROOT", $_SERVER['DOCUMENT_ROOT'].'/km');
 if(isset($_GET['dbg'])){
 	define("DEBUG_MODE",1);

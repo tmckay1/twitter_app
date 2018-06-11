@@ -83,21 +83,28 @@ class HomeController extends BaseController {
 								),
 							array(//third row
 								array(
-										"type"    => "select",
-										"label"   => "# of Tweets to Display",
-										"options" => array(
-															"attributes" => array("id" => "twitter_numberOfTweets", "class" => "form-control"),
-															"options"    => array(5 => "5", 15 => "15", 25 => "25", 50 => "50", 100 => "100", 250 => "250", 500 => "500"),
-															"content"    => ""
-														)
-									),
-								array(
 										"type"    => "input",
 										"label"   => "Location",
 										"options" => array("type" => "text", "class" => "form-control", "id" => "twitter_location", "placeholder" => "New York")
 									),
+								array(
+										"type"    => "select",
+										"label"   => "# of Tweets to Display",
+										"options" => array(
+															"attributes" => array("id" => "twitter_numberOfTweets", "class" => "form-control"),
+															"options"    => array(5 => "5", 15 => "15", 25 => "25", 50 => "50", 100 => "100"),
+															"content"    => ""
+														)
+									),
 								),
 							array(//fourth row
+								array(
+										"type"    => "input",
+										"label"   => "Use My Current Location",
+										"options" => array("type" => "checkbox", "class" => "form-check-input", "id" => "twitter_myLocation")
+									),
+								),
+							array(//fifth row
 								array(
 										"type"    => "button",
 										"options" => array(
@@ -115,22 +122,37 @@ class HomeController extends BaseController {
 		$searchForm  = new Form("twitter_searchForm", $formOptions);
 		$searchView  = $searchForm->getView();
 		$searchHtml  = "<div class='row bottom-padding'>
-							<div class='card' style='width:100%'>
-								<div class='card-body'>
-									<div class='card-title'>Twitter Search</div>
-									<div class='card-text'>$searchView</div>
+							<div class='col'>
+								<div class='card' style='width:100%'>
+									<div class='card-body'>
+										<div class='card-title'>Twitter Search</div>
+										<div class='card-text'>$searchView</div>
+									</div>
 								</div>
 							</div>
 						</div>";
 
 		//write out the results div
+		$loadingOption = array(
+								"type"       => "div",
+								"content"    => "<div class='row bottom-padding'><div class='col'>".LOADING_ICON."</div></div>",
+								"attributes" => array("style" => "display:none;")
+							);
+		$loadingDiv    = new SingularContentView("twitter_loadingIcon", $loadingOption);
 		$resultsOption = array(
 								"type"    => "div",
-								"options" => array()
+								"content" => "<div class='alert alert-warning' role='alert'>There are currently no search results</div>"
 							);
-		$resultsDiv = new SingularContentView("twitter_resultsContainer");
+		$resultsDiv  = new SingularContentView("twitter_resultsContainer", $resultsOption);
 		$resultsHtml = "<div class='row bottom-padding'>
-							<div class='col'>".$resultsDiv->getView()."</div>
+							<div class='col'>
+								<div class='card' style='width:100%'>
+									<div class='card-body'>
+										<div class='card-title'>Search Results</div>
+										<div class='card-text'>".$loadingDiv->getView().$resultsDiv->getView()."</div>
+									</div>
+								</div>
+							</div>
 						</div>";
 
 

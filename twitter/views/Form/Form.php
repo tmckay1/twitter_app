@@ -65,21 +65,23 @@ class Form extends SingularContentView{
 			foreach ($inputRow as $inputEntry) {
 				
 				//draw new column
-				$subColumn  = intval(12/count($inputRow));
-				$inputsHtml .= "<div class='form-group col-md-$subColumn'>";
-
-				//draw contents
 				$type    = isset($inputEntry['type'])    ? $inputEntry['type']    : "input";
 				$label   = isset($inputEntry['label'])   ? $inputEntry['label']   : "";
 				$options = isset($inputEntry['options']) ? $inputEntry['options'] : array();
 				$inputId = isset($options['id'])         ? $options['id']         : "";
 
+				$subColumn   = intval(12/count($inputRow));
+				$formClass   = $this->getFormClass($type, $options);
+				$inputsHtml .= "<div class='col-md-$subColumn'><div class='$formClass'>";
+
+				//draw contents
 				$labelHtml   = !empty($label) ? "<label for='$inputId'>$label</label>" : "";
+				$labelFirst  = $this->isLabelFirst($type, $options);
 				$inputHtml   = $this->getInputForTypeAndOptions($type, $options);
-				$inputsHtml .= $labelHtml.$inputHtml;
+				$inputsHtml .= $labelFirst ? $labelHtml.$inputHtml : $inputHtml.$labelHtml;
 
 				//close column
-				$inputsHtml .= "</div>";
+				$inputsHtml .= "</div></div>";
 			}
 
 			//close row
@@ -100,6 +102,8 @@ class Form extends SingularContentView{
 	 *
 	 * @param string $type    Type of input to draw (input, select, textarea, etc.)
 	 * @param array  $options The options needed for this input, assumed it has 'id' as a key
+	 *
+	 * @return string HTML for input
 	 */
 	private function getInputForTypeAndOptions($type, $options){
 
@@ -133,4 +137,37 @@ class Form extends SingularContentView{
 		return $inputHtml;		
 	}
 
+
+
+	/**
+	 * Check to see if the label should be before or after the input
+	 *
+	 * @param string $type    Type of input to draw (input, select, textarea, etc.)
+	 * @param array  $options The options needed for this input, assumed it has 'id' as a key
+	 *
+	 * @return bool Indicates if the label is first
+	 */
+	private function isLabelFirst($type, $options){
+		return !(isset($options['type'])  && $options['type'] == "checkbox");
+	}
+
+
+
+	/**
+	 * Get the class to display the input as
+	 *
+	 * @param string $type    Type of input to draw (input, select, textarea, etc.)
+	 * @param array  $options The options needed for this input, assumed it has 'id' as a key
+	 *
+	 * @return string HTML class for the input
+	 */
+	private function getFormClass($type, $options){
+		return !(isset($options['type'])  && $options['type'] == "checkbox") ? "form-group" : "form-check";
+	}
 }
+
+
+
+
+
+

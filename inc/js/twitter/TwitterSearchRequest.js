@@ -10,17 +10,19 @@ class TwitterSearchRequest {
 	/**
 	 * Default constructor
 	 *
-	 * @param string username       The username to search for in the API
-	 * @param string searchTerm     The term to search for in the API
-	 * @param string searchLocation The location to search for in the API
-	 * @param int    numberOfTweets The number of tweets to search for in the API
+	 * @param string username         The username to search for in the API
+	 * @param string searchTerm       The term to search for in the API
+	 * @param string searchLocation   The location to search for in the API
+	 * @param bool   searchMyLocation Indicates if we are going to use the user's current position in the search
+	 * @param int    numberOfTweets   The number of tweets to search for in the API
 	 */
-	constructor(username, searchTerm, searchLocation, numberOfTweets){
-		this.username        = username;
-		this.searchTerm      = searchTerm;
-		this.searchLocation  = searchLocation;   
-		this.numberOfTweets  = numberOfTweets;
-		this.response        = null;
+	constructor(username, searchTerm, searchLocation, searchMyLocation, numberOfTweets){
+		this.username         = username;
+		this.searchTerm       = searchTerm;
+		this.searchLocation   = searchLocation;   
+		this.numberOfTweets   = numberOfTweets;
+		this.searchMyLocation = searchMyLocation;
+		this.response         = null;
 	}
 
 
@@ -38,13 +40,14 @@ class TwitterSearchRequest {
 
 		var requestURL  = '/km/fw/index.php';
 		var requestData = {
-							"username"       : this.username, 
-							"searchTerm"     : this.searchTerm, 
-							"searchLocation" : this.searchLocation,
-							"numberOfTweets" : this.numberOfTweets,
-							"path"           : "Twitter",
-							"controller"     : "Search",
-							"action"         : "searchTwitter"
+							"username"         : this.username, 
+							"searchTerm"       : this.searchTerm, 
+							"searchLocation"   : this.searchLocation,
+							"numberOfTweets"   : this.numberOfTweets,
+							"searchMyLocation" : this.searchMyLocation,
+							"path"             : "Twitter",
+							"controller"       : "Search",
+							"action"           : "searchTwitter"
 							};
 		$.getJSON(requestURL, requestData, function(data){
 			if(data.STATUS == "OK"){
@@ -57,6 +60,7 @@ class TwitterSearchRequest {
 			error         = new TwitterSearchError(0, "Failed to send request, no network connection or the server is unavailable at this time.");
 			this.response = new TwitterSearchResponse(error, null);
 		}).always(function(){
+			console.log(this.response);
 			callback(this.response);
 		});
 	}
@@ -91,7 +95,7 @@ class TwitterTweetEmbedRequest {
 	 */
 	sendRequest(callback){
 
-		if(!this.tweet.url){
+		if(!this.tweet.tweetId){
 			return;
 		}
 
@@ -104,7 +108,7 @@ class TwitterTweetEmbedRequest {
 							"path"           : "Twitter",
 							"controller"     : "Search",
 							"action"         : "getEmbededTweet",
-							"url"            : "https://twitter.com/interior/status/507185938620219395"
+							"id"             : this.tweet.tweetId
 							};
 		$.getJSON(requestURL, requestData, function(data){
 			if(data.STATUS == "OK"){

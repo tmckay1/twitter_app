@@ -1,42 +1,19 @@
 $(document).ready(function(){
-
 	setupTwitterSearchForm();
+	getLocation();
 });
 
 
-
-/**
- * Setup form to search twitter API on submit
- */
-function setupTwitterSearchForm(){
-
-	$('#twitter_searchForm').on('submit', function(e){
-
-		e.preventDefault();
-
-		//get data needed to search twitter
-		var twitter_searchTerm     = $("#twitter_searchTerm").val();
-		var twitter_username       = $("#twitter_username").val();
-		var twitter_numberOfTweets = $("#twitter_numberOfTweets").val();
-		var twitter_location       = $("#twitter_location").val();
-
-		//validate it is filled out, in case the user is tampering
-		if(!twitter_searchTerm     || twitter_searchTerm     == ""){ displayError("No search term! Fill out a search term to continue."); return false;}
-		if(!twitter_username       || twitter_username       == ""){ displayError("No username! Fill out a twitter username to continue."); return false;}
-		if(!twitter_numberOfTweets || twitter_numberOfTweets == ""){ displayError("No number of tweets to display! Fill out the number of tweets to display to continue."); return false;}
-		if(!twitter_location       || twitter_location       == ""){ displayError("No location! Fill out the location to search these tweets to continue."); return false;}
-
-		var request  = new TwitterSearchRequest(twitter_username, twitter_searchTerm, twitter_location, twitter_numberOfTweets);
-		request.sendRequest(callback);
-
-		return false;
-	});
-}
-
+//define callbacks and variables
 var resultsContainerId = "twitter_resultsContainer";
 
+var latitude  = "";
+var longitude = "";
+
 //initialize the callback for the search request
-var callback = function(response){ 
+var searchCallback = function(response){ 
+
+	toggleLoadingIcon(false);
 
 	//something is horribly wrong
 	if(!response){ displayError("Something went horribly wrong. Please try again later. Sorry."); return false;}
@@ -49,11 +26,15 @@ var callback = function(response){
 	var tweets   = parser.getTweets();
 
 	//handle response by filling in the view
-	$('#'+resultsContainerId).html();
-	tweets.forEach(function(tweet){
-		var embedRequest = new TwitterTweetEmbedRequest(tweet);
-		embedRequest.sendRequest(embedCallback);
-	});
+	if(tweets.length){
+		$('#'+resultsContainerId).html("");
+		tweets.forEach(function(tweet){
+			var embedRequest = new TwitterTweetEmbedRequest(tweet);
+			embedRequest.sendRequest(embedCallback);
+		});
+	}else{
+		displayError("Your search did not turn up any results, please refine your search.");
+	}
 
 	console.log(tweets);
 }
@@ -80,6 +61,36 @@ var embedCallback = function(response){
 
 
 /**
+ * Setup form to search twitter API on submit
+ */
+function setupTwitterSearchForm(){
+
+	$('#twitter_searchForm').on('submit', function(e){
+
+		e.preventDefault();
+
+		//get data needed to search twitter
+		var twitter_searchTerm     = $("#twitter_searchTerm").val();
+		var twitter_username       = $("#twitter_username").val();
+		var twitter_numberOfTweets = $("#twitter_numberOfTweets").val();
+		var twitter_location       = $("#twitter_myLocation").prop('checked') ? {"latitude": latitude, "longitude": longitude} : $("#twitter_location").val();
+		var twitter_myLocation     = $("#twitter_myLocation").prop('checked');
+		
+		//validate it is filled out, in case the user is tampering
+		if((!twitter_searchTerm    || twitter_searchTerm     == "") && (!twitter_username || twitter_username == "")){ displayError("No search term or username! Fill out a search term or username to continue."); return false;}
+		if(!twitter_numberOfTweets || twitter_numberOfTweets == ""){ displayError("No number of tweets to display! Select the number of tweets to display to continue."); return false;}
+
+		toggleLoadingIcon(true);
+		var request  = new TwitterSearchRequest(twitter_username, twitter_searchTerm, twitter_location, twitter_myLocation, twitter_numberOfTweets);
+		request.sendRequest(searchCallback);
+
+		return false;
+	});
+}
+
+
+
+/**
  * Display the error message to the screen
  */
 function displayError(errorMsg){
@@ -89,3 +100,46 @@ function displayError(errorMsg){
 
 	$("#twitter_errorContainer").html(alert).show().delay(3000).fadeOut();
 }
+
+
+
+/**
+ * Show/hide the loadingIcon
+ */
+function toggleLoadingIcon(show){
+
+	var icon      = $("#twitter_loadingIcon");
+	var results   = $("#"+resultsContainerId);
+	var searchBtn = $("#twitter_submitButton");
+
+	if(show){ 
+		icon.show();
+		results.hide();
+		searchBtn.attr("disabled", "disabled");
+		searchBtn.html("Searching...");
+	}else{ 
+		icon.hide();
+		results.show();
+		searchBtn.removeAttr("disabled");
+		searchBtn.html("Search");
+	}
+}
+
+
+function getLocation() {
+
+	$("#twitter_myLocation").closest(".form-row").hide();
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+function showPosition(position) {
+	$("#twitter_myLocation").closest(".form-row").fadeIn();
+	latitude  = position.coords.latitude;
+	longitude = position.coords.longitude;
+}
+
+

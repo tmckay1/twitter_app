@@ -30,8 +30,7 @@ class TwitterSearchParser {
 		//make sure we have a valid response with tweets and add them to our return array
 		if(this.response && this.response.statuses){
 			this.response.statuses.forEach(function(status){
-				var url   = status.entities && status.entities.urls && status.entities.urls.length > 0 && status.entities.urls[0].url ? status.entities.urls[0].url : "";
-				var tweet = new TwitterTweet(status.id, status.created_at, status.text, url);
+				var tweet = new TwitterTweet(status.id_str, status.created_at, status.text);
 				tweets.push(tweet);
 			});
 		}

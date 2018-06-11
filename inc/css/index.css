@@ -17,3 +17,7 @@ div.jumbotron {
 .center-frame{
 	margin: 0 auto;
 }
+
+.bottom-padding {
+	margin-bottom: 23px;
+}
