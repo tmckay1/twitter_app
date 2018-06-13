@@ -38,16 +38,13 @@ class TwitterSearchRequest {
 		var error     = new TwitterSearchError(0, "An unexpected error occurred.");
 		this.response = new TwitterSearchResponse(error, null);
 
-		var requestURL  = '/km/fw/index.php';
+		var requestURL  = '/km/fw/Twitter/Search/searchTwitter';
 		var requestData = {
 							"username"         : this.username, 
 							"searchTerm"       : this.searchTerm, 
 							"searchLocation"   : this.searchLocation,
 							"numberOfTweets"   : this.numberOfTweets,
-							"searchMyLocation" : this.searchMyLocation,
-							"path"             : "Twitter",
-							"controller"       : "Search",
-							"action"           : "searchTwitter"
+							"searchMyLocation" : this.searchMyLocation
 							};
 		$.getJSON(requestURL, requestData, function(data){
 			if(data.STATUS == "OK"){
@@ -60,7 +57,6 @@ class TwitterSearchRequest {
 			error         = new TwitterSearchError(0, "Failed to send request, no network connection or the server is unavailable at this time.");
 			this.response = new TwitterSearchResponse(error, null);
 		}).always(function(){
-			console.log(this.response);
 			callback(this.response);
 		});
 	}
@@ -103,13 +99,9 @@ class TwitterTweetEmbedRequest {
 		var error     = new TwitterSearchError(0, "An unexpected error occurred.");
 		this.response = new TwitterSearchResponse(error, null);
 
-		var requestURL  = '/km/fw/index.php';
-		var requestData = {
-							"path"           : "Twitter",
-							"controller"     : "Search",
-							"action"         : "getEmbededTweet",
-							"id"             : this.tweet.tweetId
-							};
+		var requestURL  = '/km/fw/Twitter/Search/getEmbededTweet';
+		var requestData = {"id": this.tweet.tweetId};
+		
 		$.getJSON(requestURL, requestData, function(data){
 			if(data.STATUS == "OK"){
 				this.response = new TwitterSearchResponse(null, data.MSG);

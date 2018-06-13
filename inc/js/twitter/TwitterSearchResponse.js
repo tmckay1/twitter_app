@@ -33,11 +33,22 @@ class TwitterSearchError {
 	/**
 	 * Default constructor
 	 *
-	 * @param int    errorCode Error code, means nothing for now, can be expanded upon
+	 * @param int    errorCode Error code
 	 * @param string errorMsg  User friendly message explaining error
 	 */
 	constructor(errorCode, errorMsg){
 		this.errorCode = errorCode;
 		this.errorMsg  = errorMsg;
+	}
+
+
+
+	/**
+	 * Get the error code representing a can't find location
+	 *
+	 * @return int error code
+	 */
+	getLocationErrorCode(){
+		return 3;
 	}
 }

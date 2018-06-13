@@ -30,7 +30,11 @@ class TwitterListView {
 		//append a row of a single tweet view to our view for each tweet we have
 		this.tweets.forEach(function(tweet){
 			tweetView = new TwitterCardView(tweet);
-			view     += "<div class='row'><div class='col'>" + tweetView.getView() + "</div></div>";
+			view     += "<div class='row'>" +
+							"<div class='col'>" + 
+								tweetView.getView() + 
+							"</div>" +
+						"</div>";
 		});
 		
 		$('#'+viewId).append(view);
@@ -53,8 +57,8 @@ class TwitterCardView {
 	 *
 	 * @param TwitterTweet tweet The tweet object to create a view for
 	 */
-	constructor(tweet){
-		this.tweet = tweet;
+	constructor(tweetHtml){
+		this.tweetHtml = tweetHtml;
 	}
 
 
@@ -65,7 +69,13 @@ class TwitterCardView {
 	 * @return string Card View
 	 */
 	getView(){
-		return "";
+		return "<div class='card-header' id='headingOne'>" +
+					"<h5 class='mb-0'>" +
+						"<button class='btn btn-link' data-toggle='collapse' data-target='#collapseOne' aria-expanded='true' aria-controls='collapseOne'>" +
+						  	"Collapsible Group Item #1" +
+						"</button>" +
+					"</h5>" +
+			    "</div>";
 	}
 }
 
@@ -94,7 +104,11 @@ class TwitterEmbededView {
 	 * Get the embeded view
 	 */
 	getView(){
-		return "<div class='row'><div class='col'>" + this.html + "</div></div>";
+		return  "<div class='row'>" +
+					"<div class='col'>" + 
+						this.html + 
+					"</div>" + 
+				"</div>";
 	}
 }
 

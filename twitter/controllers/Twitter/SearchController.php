@@ -15,6 +15,12 @@ class SearchController extends BaseController {
 
 
 	/**
+	 * @var ERROR_CODE_LOCATION error code for unknown location
+	 */
+	const ERROR_CODE_UNKNOWN_LOCATION = 3;
+
+
+	/**
 	 * Get empty contents
 	 *
 	 * @return string Controller contents
@@ -67,6 +73,11 @@ class SearchController extends BaseController {
 	        $prepAddr  = str_replace(' ','+',$searchLocation);
 	        $geocode   = file_get_contents('https://maps.google.com/maps/api/geocode/json?address='.$prepAddr.'&sensor=false');
 	        $output    = json_decode($geocode);
+
+	        //failed search
+	        if(empty($output) || empty($output->results)){ return array("statuses" => null, "error" => "Could not find specified location.", "errorCode" => self::ERROR_CODE_UNKNOWN_LOCATION);}
+
+	        //successful search
 	        $latitude  = $output->results[0]->geometry->location->lat;
 	        $longitude = $output->results[0]->geometry->location->lng;
 			$searchParams['geocode']  = $latitude.",".$longitude.",".$distance;
@@ -76,7 +87,7 @@ class SearchController extends BaseController {
 		$connection = new \Abraham\TwitterOAuth\TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, APP_ACCESS_TOKEN, APP_ACCESS_TOKEN_SECRET);
 		$statuses   = $connection->get("search/tweets", $searchParams);
 
-		return $statuses;
+		return array("payload" => $statuses, "error" => null);
 	}
 
 
@@ -96,7 +107,7 @@ class SearchController extends BaseController {
 		$connection = new \Abraham\TwitterOAuth\TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, APP_ACCESS_TOKEN, APP_ACCESS_TOKEN_SECRET);
 		$statuses   = $connection->get("statuses/oembed", ["id" => $id, "omit_script" => true]);
 
-		return $statuses;
+		return array("payload" => $statuses, "error" => null);
 
 	}
 

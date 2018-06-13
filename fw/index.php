@@ -1,8 +1,6 @@
 <?php
 /**
- * This page should be redone to create a .htaccess file that will forbid entry to anything in the fw/ folder and 
- * redirect here. Then we would parse the path to extract the controller and action. For the sake of time, this 
- * will do for now.
+ * This file parses the url to extract the action to perform for the controller
  */
 require_once("../inc/include.php");
 
@@ -10,43 +8,43 @@ require_once("../inc/include.php");
 $result = array("STATUS" => "OK", "MSG" => "");
 $data   = $_GET;
 
-//check if we have required parameters
-$requiredFields    = array("controller", "path", "action");
-$hasRequiredFields = true;
-foreach($requiredFields as $field){
-	if(!isset($data[$field])){
-		$hasRequiredFields = false;
-		break;
-	}
-}
-
-//check required fields
-if($hasRequiredFields){
-
-	$controller = $data['controller'];
-	$path       = $data['path'];
-	$action     = $data['action'];
-
-	//check if controller exists
-	$controllerPath = "\\Twitter\\Controllers\\$path\\{$controller}Controller";
-	if(class_exists($controllerPath)){
-
-		//check if method exists
-		$controller = new $controllerPath();
-		if(method_exists($controller, $action)){
-			$result["MSG"] = $controller->$action();
-		}else{
-			$result["STATUS"] = "ERROR";
-			$result["MSG"]    = "Cannot find specified action.";
-		}
-	}else{
+//parse url and extract controller and action
+$url        = isset($data['_url']) ? $data['_url'] : "";
+$urlArray   = explode("/", $url);
+if (count($urlArray) >= 2){
+    $action         = end($urlArray);
+    $controllerArr  = array_splice($urlArray, 0, count($urlArray) -1 );    
+    $controllerBase = implode("\\", $controllerArr);    
+    if( strpos($controllerBase, "Controller") === false){
+        $controllerBase = $controllerBase . "Controller";
+    }else{
 		$result["STATUS"] = "ERROR";
-		$result["MSG"]    = "Cannot find specified controller.";
-	}
+		$result["MSG"]    = "Invalid request sent, can't find controller.";
+    }
 }else{
 	$result["STATUS"] = "ERROR";
 	$result["MSG"]    = "Invalid request sent.";
 }
 
+
+
+//initialize controller
+$opts           = isset($data['opts']) ? $data['opts'] : null;
+$controllerPath = "\Twitter\Controllers".$controllerBase;
+$controller     = class_exists($controllerPath) ? new $controllerPath($opts) : new \Twitter\Controllers\BaseController($opts);
+
+
+
+//check if the method exists for the given controller
+if(method_exists($controller, $action)){
+    $result["MSG"] = $controller->$action();
+}else if($result["STATUS"] != "ERROR"){
+	$result["STATUS"] = "ERROR";
+	$result["MSG"]    = "Cannot find specified action ($action) for controller ".get_class($controller).".";
+}
+
+
+
+//output result
 echo json_encode($result);
 

@@ -149,7 +149,7 @@ class HomeController extends BaseController {
 								<div class='card' style='width:100%'>
 									<div class='card-body'>
 										<div class='card-title'>Search Results</div>
-										<div class='card-text'>".$loadingDiv->getView().$resultsDiv->getView()."</div>
+										<div class='card-text'>".$resultsDiv->getView().$loadingDiv->getView()."</div>
 									</div>
 								</div>
 							</div>
