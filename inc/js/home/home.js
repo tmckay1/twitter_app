@@ -38,7 +38,6 @@ var searchCallback = function(response){
 	tweets     = parser.getTweets();
 	var error  = parser.getError();
 	tweetIndexToDisplay = 0;
-	console.log(tweets);
 
 	//handle response by filling in the view
 	if(error){
@@ -58,8 +57,9 @@ var searchCallback = function(response){
 }
 
 //initialize the callback for the embed request
-var embedCallback = function(response){
+var embedCallback = function(response, tweet){
 
+	console.log(tweet);
 	$("#twitter_loadingIcon").hide();
 	canResendEmbedRequest = true;
 
@@ -72,7 +72,8 @@ var embedCallback = function(response){
 	//parse the raw data and append the view to our existing view
 	var parser      = new TwitterEmbedSearchParser(response.responseData);
 	var tweetHtml   = parser.getTweetHtml();
-	var embededView = new TwitterEmbededView(tweetHtml);
+	var author      = parser.getAuthor();
+	var embededView = new TwitterEmbededView(tweet, tweetHtml, author);
 	$('#'+resultsContainerId).append(embededView.getView());
 
 	//initialize embed
@@ -163,7 +164,6 @@ function toggleLoadingIcon(show){
     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
     	if(tweets.length && canResendEmbedRequest){
 			displayMoreTweets();
-	        console.log("rock bottom");
 	    }
     }
 };

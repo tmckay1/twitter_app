@@ -91,9 +91,8 @@ class TwitterTweetEmbedRequest {
 	 */
 	sendRequest(callback){
 
-		if(!this.tweet.tweetId){
-			return;
-		}
+		var tweet = this.tweet;
+		if(!tweet.tweetId){ return;}
 
 		//set default response
 		var error     = new TwitterSearchError(0, "An unexpected error occurred.");
@@ -113,7 +112,7 @@ class TwitterTweetEmbedRequest {
 			error         = new TwitterSearchError(0, "Failed to send request, no network connection or the server is unavailable at this time.");
 			this.response = new TwitterSearchResponse(error, null);
 		}).always(function(){
-			callback(this.response);
+			callback(this.response, tweet);
 		});
 	}
 }

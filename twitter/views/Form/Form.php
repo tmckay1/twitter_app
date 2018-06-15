@@ -118,6 +118,7 @@ class Form extends SingularContentView{
 				$input          = new Select($id, $options);
 				$inputHtml      = $input->getView();
 				break;
+			case "textarea":
 			case "div":
 			case "button":
 				$id             = isset($options['attributes']) && isset($options['attributes']['id']) ? $options['attributes']['id'] : "";

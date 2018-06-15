@@ -1,6 +1,7 @@
 <?php
 namespace Twitter\Controllers\Twitter;
 
+use \Twitter\Auth\Twitter\TwitterAuth;
 use \Twitter\Controllers\BaseController;
 
 
@@ -27,6 +28,17 @@ class SearchController extends BaseController {
 	 */
 	public function getContents(){
 		return "";
+	}
+
+
+
+	/**
+	 * Protected accessor used to initialize auth object
+	 *
+	 * @return \Twitter\Auth\Twitter\TwitterAuth object used for authorization
+	 */
+	protected function getAuth(){
+		return new TwitterAuth();
 	}
 
 
@@ -84,7 +96,7 @@ class SearchController extends BaseController {
 		}
 
 		//send request
-		$connection = new \Abraham\TwitterOAuth\TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, APP_ACCESS_TOKEN, APP_ACCESS_TOKEN_SECRET);
+		$connection = new \Abraham\TwitterOAuth\TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $this->auth->getAuthToken(), $this->auth->getAppSecret());
 		$statuses   = $connection->get("search/tweets", $searchParams);
 
 		return array("payload" => $statuses, "error" => null);
@@ -104,11 +116,10 @@ class SearchController extends BaseController {
 
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
 
-		$connection = new \Abraham\TwitterOAuth\TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, APP_ACCESS_TOKEN, APP_ACCESS_TOKEN_SECRET);
+		$connection = new \Abraham\TwitterOAuth\TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $this->auth->getAuthToken(), $this->auth->getAppSecret());
 		$statuses   = $connection->get("statuses/oembed", ["id" => $id, "omit_script" => true]);
 
 		return array("payload" => $statuses, "error" => null);
-
 	}
 
 }

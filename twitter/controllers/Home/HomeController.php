@@ -6,6 +6,8 @@ use \Twitter\Views\Header\JumboTron;
 use \Twitter\Views\Form\Form;
 use \Twitter\Views\SingularContentView;
 
+use \Twitter\Auth\Twitter\TwitterAuth;
+
 use \Twitter\Controllers\BaseController;
 
 
@@ -57,6 +59,9 @@ class HomeController extends BaseController {
 						<div class='col'>$jumboView</div>
 						<div class='col-1'></div>
 					</div>";
+
+		//write out the form to post a tweet
+		$postTweetHtml = $this->getPostTweetHtml();
 
 		//write out form to search twitter api
 		$formInputs  = array(
@@ -157,7 +162,80 @@ class HomeController extends BaseController {
 
 
 		//write html
-		return  $carHtml.$grayHtml.$jumboHtml.$searchHtml.$resultsHtml;
+		return  $carHtml.$grayHtml.$jumboHtml.$postTweetHtml.$searchHtml.$resultsHtml;
+	}
+
+
+
+	/**
+	 * Get the form to post tweet
+	 */
+	private function getPostTweetHtml(){
+
+		//if not logged in, do not draw view
+		if(!$this->auth->isLoggedIn()){ return "";}
+
+		//write out form to search twitter api
+		$formInputs  = array(
+							array(//first row - div to hold any error messages
+								array(
+										"type"    => "div",
+										"options" => array(
+															"attributes" => array("id" => "twitter_postErrorContainer"),
+															"content"    => ""
+														)
+									),
+								),
+							array(//second row
+								array(
+										"type"    => "textarea",
+										"label"   => "What do you want the tweet to say?",
+										"options" => array(
+															"attributes" => array("class" => "form-control", "id" => "twitter_postText", "placeholder" => "Tweet..."),
+															"content"    => ""
+														)
+									),
+								),
+							array(//third row
+								array(
+										"type"    => "button",
+										"options" => array(
+															"attributes" => array("type" => "submit", "class" => "btn btn-primary", "id" => "twitter_postSubmitButton"),
+															"content"    => "Post"
+														)
+									),
+								),
+						);
+		$formOptions = array(
+							"attributes" => array(),
+							"content"    => "",
+							"inputs"     => $formInputs
+						);
+		$postTweetForm = new Form("twitter_postTweetForm", $formOptions);
+		$postTweetView = $postTweetForm->getView();
+		$postTweetHtml =   "<div class='row bottom-padding'>
+								<div class='col'>
+									<div class='card' style='width:100%'>
+										<div class='card-body'>
+											<div class='card-title'>Post a Tweet</div>
+											<div class='card-text'>$postTweetView</div>
+										</div>
+									</div>
+								</div>
+							</div>";
+
+		return $postTweetHtml;
+	}
+
+
+
+	/**
+	 * Protected accessor used to initialize auth object
+	 *
+	 * @return \Twitter\Auth\Twitter\TwitterAuth object used for authorization
+	 */
+	protected function getAuth(){
+		return new TwitterAuth();
 	}
 
 }

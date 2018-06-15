@@ -7,8 +7,7 @@ namespace Twitter\Pages;
  * @class Page
  *
  * This represents a basic page in the app. It has a basic header and footer. This is meant to be 
- * subclassed for the specific page, overriding certain methods indicated below. If this was a 
- * real application, authorization and other things can go here
+ * subclassed for the specific page, overriding certain methods indicated below
  */
 class Page {
 
@@ -29,6 +28,11 @@ class Page {
 	 */
 	protected $jsArr;
 
+	/**
+	 * @var $auth \Twitter\Auth\Auth object to perform authentication functions
+	 */
+	protected $auth;
+
 
 
 	/**
@@ -36,6 +40,7 @@ class Page {
 	 */
 	function __construct(){
 		$this->controller = $this->getController();
+		$this->auth       = $this->controller->getControllerAuth();
 		$this->cssArr     = $this->getCss();
 		$this->jsArr      = $this->getJs();
 	}
@@ -46,6 +51,10 @@ class Page {
 	 * Draw the contents of the page to the screen
 	 */
 	final public function drawContents(){
+
+		$this->initializePage();
+
+		$this->authorize();
 
 		$header  = $this->getHeader();
 		$content = $this->controller->getContents();
@@ -101,6 +110,24 @@ class Page {
 		foreach($this->jsArr  as $source){ $js  .= "<script src='$source'></script>";}
 		foreach($this->cssArr as $source){ $css .= "<link  href='$source' rel='stylesheet'>";}
 
+		$loginForm = $this->auth->isLoggedIn() ?
+									"<form class='form-inline' id='sign-out-form' method='POST'>
+										<input type='hidden' name='signout_user' id='signout_user' val='1'>
+										<div class='dropdown'>
+											<button class='btn btn-outline-info dropdown-toggle' type='button' id='signOutMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+												Hello ".$this->auth->getUserName()."
+											</button>
+											<div class='dropdown-menu' aria-labelledby='signOutMenuButton'>
+												<button class='dropdown-item' type='submit' id='signout-user-button'>Sign Out</button>
+											</div>
+										</div>
+									</form>"
+									: 
+									"<form class='form-inline' id='sign-in-form' method='POST'>
+										<input type='hidden' name='signin_user' id='signin_user' val='1'>
+										<button class='btn btn-outline-info my-2 my-sm-0' type='submit'>Sign In</button>
+									</form>";
+
 		$header =  "<!DOCTYPE html>
 					<html>
 					    <head>
@@ -115,7 +142,12 @@ class Page {
     						$css
 					    </head>
 					    <body>
-					        <header class='page-header page-header-sitebrand-topbar' ></header>
+					        <header class='page-header page-header-sitebrand-topbar' >
+					        	<nav class='navbar navbar-light bg-light justify-content-between'>
+									<a class='navbar-brand' href='#'><img src='".IMGROOT."/twitter-logo.png'></a>
+									$loginForm
+								</nav>
+					        </header>
 					        <div class='container'>";
 
         return $header;
@@ -137,5 +169,36 @@ class Page {
 			</html>";
 
 		return $footer;
+	}
+
+
+
+	/**
+	 * Authorize the user (login/logout). Performs action based on POST parameters
+	 */
+	private function authorize(){
+
+		//log user in if not already logged in
+		if(isset($_POST['signin_user']) && !$this->auth->isLoggedIn()){
+			$this->auth->login();
+		}
+
+		//finish authorizing user if needs special auth
+		$this->auth->specialAuthorization();
+
+		//log user in if not already logged in
+		if(isset($_POST['signout_user']) && $this->auth->isLoggedIn()){
+			$this->auth->logout();
+		}
+	}
+
+
+
+	/**
+	 * Perform page initialization functions
+	 */
+	private function initializePage(){
+		//can start session here
+		session_start();
 	}
 }

@@ -55,10 +55,14 @@ class TwitterCardView {
 	/**
 	 * Default constructor
 	 *
-	 * @param TwitterTweet tweet The tweet object to create a view for
+	 * @param TwitterTweet tweet     The tweet for this view
+	 * @param string       tweetHtml The tweet html for this view
+	 * @param string       author    The tweet author for this view
 	 */
-	constructor(tweetHtml){
+	constructor(tweet, tweetHtml, author){
+		this.tweet     = tweet;
 		this.tweetHtml = tweetHtml;
+		this.author    = author;
 	}
 
 
@@ -69,15 +73,27 @@ class TwitterCardView {
 	 * @return string Card View
 	 */
 	getView(){
-		return "<div class='card-header' id='headingOne'>" +
-					"<h5 class='mb-0'>" +
-						"<button class='btn btn-link' data-toggle='collapse' data-target='#collapseOne' aria-expanded='true' aria-controls='collapseOne'>" +
-						  	"Collapsible Group Item #1" +
-						"</button>" +
-					"</h5>" +
+		return  "<div id='accordion-"+this.tweet.tweetId+"'>" +
+					"<div class='card'>" +
+						"<div class='card-header' id='heading-"+this.tweet.tweetId+"'>" +
+							"<h5 class='mb-0'>" +
+								"<button class='btn btn-link' style='width:100%' data-toggle='collapse' data-target='#collapse-"+this.tweet.tweetId+"' aria-expanded='true' aria-controls='collapse-"+this.tweet.tweetId+"'>" +
+								  	"<span style='float:left'>" + this.author + " (@"+this.tweet.handle+")" + "</span>" + 
+								  	"<span style='float:right'>" + this.tweet.date + "</span>" +
+								  	"<div style='clear:both'></div>" +
+								"</button>" +
+							"</h5>" +
+					    "</div>" +
+					    "<div id='collapse-"+this.tweet.tweetId+"' class='collapse show' aria-labelledby='heading-"+this.tweet.tweetId+"' data-parent='#accordion-"+this.tweet.tweetId+"'>" +
+							"<div class='card-body'>" +
+								this.tweetHtml +
+							"</div>" +
+				        "</div>" +
+				    "</div>" +
 			    "</div>";
 	}
 }
+
 
 
 /**
@@ -92,10 +108,14 @@ class TwitterEmbededView {
 	/**
 	 * Default constructor
 	 *
-	 * @param string html The tweet html for this view
+	 * @param TwitterTweet tweet     The tweet for this view
+	 * @param string       tweetHtml The tweet html for this view
+	 * @param string       author    The tweet author for this view
 	 */
-	constructor(html){
-		this.html = html;
+	constructor(tweet, tweetHtml, author){
+		this.tweet     = tweet;
+		this.tweetHtml = tweetHtml;
+		this.author    = author;
 	}
 
 
@@ -104,9 +124,10 @@ class TwitterEmbededView {
 	 * Get the embeded view
 	 */
 	getView(){
-		return  "<div class='row'>" +
+		var cardView = new TwitterCardView(this.tweet, this.tweetHtml, this.author);
+		return  "<div class='row bottom-padding'>" +
 					"<div class='col'>" + 
-						this.html + 
+						cardView.getView() + 
 					"</div>" + 
 				"</div>";
 	}
