@@ -19,6 +19,11 @@
 	opacity: .8
 }
 
+/*hr should be white on this page unless in a special DOM*/
+hr {
+	border-top-color: white; 
+}
+
 /*add styling to welcome screen*/
 .jumbotron {
 	color: white;

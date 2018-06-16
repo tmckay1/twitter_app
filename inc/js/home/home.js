@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	setupTwitterSearchForm();
+	setupTwitterPostStatusForm();
 	setupLocation();
-	setupLoadMoreTweets();
 });
 
 
@@ -80,11 +80,52 @@ var embedCallback = function(response, tweet){
 	twttr.widgets.load(document.getElementById("#"+resultsContainerId));
 }
 
+//initialize callback for posting a status
+var postStatusCallback = function(response){
+
+	togglePostFormButton(false);
+
+	//something is horribly wrong
+	if(!response){ displayError("Something went horribly wrong. Please try again later. Sorry.", "twitter_postErrorContainer"); return false;}
+
+	//check response
+	if(response.searchError){ displayError(response.searchError.errorMsg, "twitter_postErrorContainer"); return false;}
+
+	//display success and clear contents of tweet
+	displaySuccess("Status successfully updated! Search for your tweets below.", "twitter_postErrorContainer");
+	$("#twitter_postText").val("");
+}
+
 //initialize callback for getting the user's position
 var storePosition = function(position) {
 	$("#twitter_myLocation").closest(".form-row").fadeIn();
 	latitude  = position.coords.latitude;
 	longitude = position.coords.longitude;
+}
+
+
+
+/**
+ * Setup form to post a status through the twitter API
+ */
+function setupTwitterPostStatusForm(){
+
+	$('#twitter_postTweetForm').on('submit', function(e){
+
+		e.preventDefault();
+
+		//get data needed to search twitter
+		var twitter_postText = $("#twitter_postText").val();
+		
+		//validate it is filled out, in case the user is tampering
+		if(!twitter_postText || twitter_postText == ""){ displayError("No tweet entered! Enter a tweet below to continue.", "twitter_postErrorContainer"); return false;}
+
+		togglePostFormButton(true);
+		var request = new TwitterPostStatusRequest(twitter_postText);
+		request.sendRequest(postStatusCallback);
+
+		return false;
+	});
 }
 
 
@@ -139,6 +180,24 @@ function toggleLoadingIcon(show){
 		results.show();
 		searchBtn.removeAttr("disabled");
 		searchBtn.html("Search");
+	}
+}
+
+
+
+/**
+ * Modify UI to show status is posting
+ */
+function togglePostFormButton(show){
+
+	var postBtn = $("#twitter_postSubmitButton");
+
+	if(show){ 
+		postBtn.attr("disabled", "disabled");
+		postBtn.html("Posting...");
+	}else{ 
+		postBtn.removeAttr("disabled");
+		postBtn.html("Post");
 	}
 }
 

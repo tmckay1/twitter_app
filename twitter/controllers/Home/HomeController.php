@@ -192,7 +192,7 @@ class HomeController extends BaseController implements PageInterface{
 										"type"    => "textarea",
 										"label"   => "What do you want the tweet to say?",
 										"options" => array(
-															"attributes" => array("class" => "form-control", "id" => "twitter_postText", "placeholder" => "Tweet..."),
+															"attributes" => array("class" => "form-control", "id" => "twitter_postText", "placeholder" => "Tweet...", "required" => "required"),
 															"content"    => ""
 														)
 									),
@@ -223,7 +223,14 @@ class HomeController extends BaseController implements PageInterface{
 										</div>
 									</div>
 								</div>
-							</div>";
+							</div>
+							<br>
+							<div class='row bottom-padding'>
+								<div class='col-5'><hr></div>
+								<div class='col-2' style='text-align:center;color:white'>OR</div>
+								<div class='col-5'><hr></div>
+							</div>
+							<br>";
 
 		return $postTweetHtml;
 	}

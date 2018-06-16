@@ -119,6 +119,60 @@ class TwitterTweetEmbedRequest {
 
 
 
+/**
+ * @class TwitterPostRequest
+ *
+ * This class encapsulates a request to post a status to twitter
+ */
+class TwitterPostStatusRequest {
+
+
+
+	/**
+	 * Default constructor
+	 *
+	 * @param string status The status to post
+	 */
+	constructor(status){
+		this.status = status;
+	}
+
+
+
+	/**
+	 * Send the post request
+	 *
+	 * @return TwitterResponse
+	 */
+	sendRequest(callback){
+
+		if(!this.status){ return;}
+
+		//set default response
+		var error     = new TwitterError(0, "An unexpected error occurred.");
+		this.response = new TwitterResponse(error, null);
+
+		var requestURL  = '/km/fw/Twitter/Post/postStatus';
+		var requestData = {"status": this.status};
+		
+		$.getJSON(requestURL, requestData, function(data){
+			if(data.STATUS == "OK"){
+				this.response = new TwitterResponse(null, data.MSG);
+			}else{
+				error         = new TwitterError(0, data.MSG);
+				this.response = new TwitterResponse(error, null);
+			}
+		}).fail(function(){
+			error         = new TwitterError(0, "Failed to send request, no network connection or the server is unavailable at this time.");
+			this.response = new TwitterResponse(error, null);
+		}).always(function(){
+			callback(this.response);
+		});
+	}
+}
+
+
+
 
 
 

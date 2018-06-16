@@ -60,6 +60,18 @@ function displayInfo(errorMsg, containerId){
 
 
 /**
+ * Display the success message to the screen
+ *
+ * @param string errorMsg    The message to display
+ * @param string containerId The container that will house the message
+ */
+function displaySuccess(errorMsg, containerId){
+	displayAlert("success", errorMsg, containerId);
+}
+
+
+
+/**
  * Get the location of the user using HTML5 Geolocation
  *
  * @param function callback The callback to use when successfully retrieved user's location
