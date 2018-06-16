@@ -4,6 +4,25 @@ namespace Twitter\Controllers;
 
 
 /**
+ * @interface PageInterface
+ *
+ * The interface used by some controllers that draw contents to a page
+ */
+interface PageInterface {
+
+
+
+	/**
+	 * Get the contents of the controller
+	 *
+	 * @return string Controller contents
+	 */
+	public function getContents();
+}
+
+
+
+/**
  * @class BaseController
  *
  * This class represents the base class of all the controllers used in this application.
@@ -25,15 +44,7 @@ abstract class BaseController {
 	function __construct(){
 		$this->auth = $this->getAuth();
 	}
-
-
-	/**
-	 * Get the contents of the controller
-	 *
-	 * @return string Controller contents
-	 */
-	abstract public function getContents();
-
+	
 
 
 	/**

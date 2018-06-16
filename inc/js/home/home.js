@@ -1,6 +1,7 @@
 $(document).ready(function(){
 	setupTwitterSearchForm();
-	getLocation();
+	setupLocation();
+	setupLoadMoreTweets();
 });
 
 
@@ -15,11 +16,11 @@ var tweets                   = [];
 var tweetsToDisplayAtOneTime = 5;
 var tweetIndexToDisplay      = 0;
 var canResendEmbedRequest    = false;
-var numberOfRetries          = 0;
 
 //sometimes google api fails, so keep track of last request and retry certain number of times
 var lastSearchRequest = null;
 var retryAttempts     = 5;
+var numberOfRetries   = 0;
 
 //initialize the callback for the search request
 var searchCallback = function(response){ 
@@ -28,10 +29,10 @@ var searchCallback = function(response){
 	numberOfRetries++;
 
 	//something is horribly wrong
-	if(!response){ displayError("Something went horribly wrong. Please try again later. Sorry."); return false;}
+	if(!response){ displayError("Something went horribly wrong. Please try again later. Sorry.", "twitter_errorContainer"); return false;}
 
 	//check response
-	if(response.searchError){ displayError(response.searchError.errorMsg); return false;}
+	if(response.searchError){ displayError(response.searchError.errorMsg, "twitter_errorContainer"); return false;}
 
 	//parse raw data
 	var parser = new TwitterSearchParser(response.responseData);
@@ -45,7 +46,7 @@ var searchCallback = function(response){
 			lastSearchRequest.sendRequest(searchCallback);
 		}else{
 			numberOfRetries = 0;
-			displayError(error.errorMsg);
+			displayError(error.errorMsg, "twitter_errorContainer");
 		}
 	}else{
 		if(tweets.length != $("#twitter_numberOfTweets").val()){
@@ -59,15 +60,14 @@ var searchCallback = function(response){
 //initialize the callback for the embed request
 var embedCallback = function(response, tweet){
 
-	console.log(tweet);
 	$("#twitter_loadingIcon").hide();
 	canResendEmbedRequest = true;
 
 	//something is horribly wrong
-	if(!response){ displayError("Something went horribly wrong. Please try again later. Sorry."); return false;}
+	if(!response){ displayError("Something went horribly wrong. Please try again later. Sorry.", "twitter_errorContainer"); return false;}
 
 	//check response
-	if(response.searchError){ displayError(response.searchError.errorMsg); return false;}
+	if(response.searchError){ displayError(response.searchError.errorMsg, "twitter_errorContainer"); return false;}
 
 	//parse the raw data and append the view to our existing view
 	var parser      = new TwitterEmbedSearchParser(response.responseData);
@@ -78,6 +78,13 @@ var embedCallback = function(response, tweet){
 
 	//initialize embed
 	twttr.widgets.load(document.getElementById("#"+resultsContainerId));
+}
+
+//initialize callback for getting the user's position
+var storePosition = function(position) {
+	$("#twitter_myLocation").closest(".form-row").fadeIn();
+	latitude  = position.coords.latitude;
+	longitude = position.coords.longitude;
 }
 
 
@@ -99,8 +106,8 @@ function setupTwitterSearchForm(){
 		var twitter_myLocation     = $("#twitter_myLocation").prop('checked');
 		
 		//validate it is filled out, in case the user is tampering
-		if((!twitter_searchTerm    || twitter_searchTerm     == "") && (!twitter_username || twitter_username == "")){ displayError("No search term or username! Fill out a search term or username to continue."); return false;}
-		if(!twitter_numberOfTweets || twitter_numberOfTweets == ""){ displayError("No number of tweets to display! Select the number of tweets to display to continue."); return false;}
+		if((!twitter_searchTerm    || twitter_searchTerm     == "") && (!twitter_username || twitter_username == "")){ displayError("No search term or username! Fill out a search term or username to continue.", "twitter_errorContainer"); return false;}
+		if(!twitter_numberOfTweets || twitter_numberOfTweets == ""){ displayError("No number of tweets to display! Select the number of tweets to display to continue.", "twitter_errorContainer"); return false;}
 
 		toggleLoadingIcon(true);
 		var request       = new TwitterSearchRequest(twitter_username, twitter_searchTerm, twitter_location, twitter_myLocation, twitter_numberOfTweets);
@@ -109,26 +116,6 @@ function setupTwitterSearchForm(){
 
 		return false;
 	});
-}
-
-
-
-/**
- * Display the error message to the screen
- */
-function displayError(errorMsg){
-
-	//generate error div
-	var alert = '<div class="alert alert-danger" role="alert">'+errorMsg+'</div>';
-
-	$("#twitter_errorContainer").html(alert).show().delay(3000).fadeOut();
-}
-function displayWarning(errorMsg){
-
-	//generate error div
-	var alert = '<div class="alert alert-warning" role="alert">'+errorMsg+'</div>';
-
-	$("#twitter_errorContainer").html(alert).show().delay(3000).fadeOut();
 }
 
 
@@ -158,15 +145,23 @@ function toggleLoadingIcon(show){
 
 
 /**
- * Display tweets to the page if there are any left
+ * When we scroll to the bottom of the screen, load more tweets if there are any to load
  */
- window.onscroll = function(ev) { //hit bottom of screen
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-    	if(tweets.length && canResendEmbedRequest){
-			displayMoreTweets();
+function setupLoadMoreTweets(){
+	window.onscroll = function(ev) { //hit bottom of screen
+	    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+	    	if(tweets.length && canResendEmbedRequest){
+				displayMoreTweets();
+		    }
 	    }
-    }
-};
+	};
+}
+
+
+
+/**
+ * Display tweets to the page if there are any left that haven't yet been displayed
+ */
 function displayMoreTweets(){
 
 	if(tweets.length){
@@ -194,7 +189,7 @@ function displayMoreTweets(){
 			tweetIndexToDisplay += tweetsToDisplayAtOneTime;
 		}
 	}else{
-		displayError("Your search did not turn up any results, please refine your search.");
+		displayError("Your search did not turn up any results, please refine your search.", "twitter_errorContainer");
 	}
 }
 
@@ -203,7 +198,7 @@ function displayMoreTweets(){
 /**
  * Location functions
  */
-function getLocation() {
+function setupLocation(){
 
 	//uncheck and hide the checkbox
 	$("#twitter_myLocation").prop('checked', false);
@@ -219,16 +214,8 @@ function getLocation() {
 		}
 	});
 
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(storePosition);
-    } else {
-        alert("Geolocation is not supported by this browser.");
-    }
-}
-function storePosition(position) {
-	$("#twitter_myLocation").closest(".form-row").fadeIn();
-	latitude  = position.coords.latitude;
-	longitude = position.coords.longitude;
+	//get the user's location
+	getLocation(storePosition);
 }
 
 

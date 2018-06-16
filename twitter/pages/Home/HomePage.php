@@ -47,10 +47,11 @@ class HomePage extends Page{
 		return array(
 				INCROOT."/js/twitter/TwitterInclude.js",
 				INCROOT."/js/twitter/TwitterTweet.js",
-				INCROOT."/js/twitter/TwitterSearchResponse.js",
-				INCROOT."/js/twitter/TwitterListView.js",
-				INCROOT."/js/twitter/TwitterSearchParser.js",
-				INCROOT."/js/twitter/TwitterSearchRequest.js",
+				INCROOT."/js/twitter/TwitterResponse.js",
+				INCROOT."/js/twitter/TwitterView.js",
+				INCROOT."/js/twitter/TwitterParser.js",
+				INCROOT."/js/twitter/TwitterRequest.js",
+				INCROOT."/js/index.js",
 				INCROOT."/js/home/home.js",
 			);
 	}

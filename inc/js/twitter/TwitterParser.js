@@ -52,7 +52,7 @@ class TwitterSearchParser {
 	/**
 	 * Get any search error that occurred
 	 *
-	 * @return TwitterSearchError Search error
+	 * @return TwitterError Search error
 	 */
 	getError(){
 
@@ -60,7 +60,7 @@ class TwitterSearchParser {
 
 		if(this.response && this.response.error){
 			var errorCode = this.response.errorCode ? this.response.errorCode : 0;
-			error         = new TwitterSearchError(errorCode, this.response.error);
+			error         = new TwitterError(errorCode, this.response.error);
 		}
 
 		return error

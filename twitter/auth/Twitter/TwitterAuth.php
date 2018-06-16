@@ -18,16 +18,40 @@ class TwitterAuth extends Auth{
 
 
 	/**
-	 * @var Twitter auth constants we'll store in the session
+	 * @var TWITTER_AUTH_KEY_BASE The base key entry that points to all Twitter auth entries
 	 */
 	const TWITTER_AUTH_KEY_BASE         = "twitter_auth";
 
+	/**
+	 * @var TWITTER_AUTH_KEY_LOGGED_IN Key pointing to a boolean indicating if the user authenticated into Twitter using this app
+	 */
 	const TWITTER_AUTH_KEY_LOGGED_IN    = "twitter_user_logged_in";
-	const TWITTER_AUTH_KEY_OAUTH_TOKEN  = "twitter_oath_token";
-	const TWITTER_AUTH_KEY_OAUTH_SECRET = "twitter_oath_secret";
-	const TWITTER_AUTH_KEY_ACCESS_TOKEN = "twitter_oath_secret";
+
+	/**
+	 * @var TWITTER_AUTH_KEY_OAUTH_TOKEN Key pointing to the oauth token retreived from the initial request token
+	 */
+	const TWITTER_AUTH_KEY_OAUTH_TOKEN  = "twitter_oauth_token";
+
+	/**
+	 * @var TWITTER_AUTH_KEY_OAUTH_SECRET Key pointing to the oauth secret retrieved from the initial request token
+	 */
+	const TWITTER_AUTH_KEY_OAUTH_SECRET = "twitter_oauth_secret";
+
+	/**
+	 * @var TWITTER_AUTH_KEY_ACCESS_TOKEN Key pointing to the access token retrieved from a successful authentication
+	 */
+	const TWITTER_AUTH_KEY_ACCESS_TOKEN = "twitter_access_token";
+
+	/**
+	 * @var TWITTER_AUTH_KEY_USER_NAME Key pointing to the full name of the user
+	 */
 	const TWITTER_AUTH_KEY_USER_NAME    = "twitter_user_name";
+
+	/**
+	 * @var TWITTER_AUTH_KEY_SCREEN_NAME Key pointing to the screen name of the user
+	 */
 	const TWITTER_AUTH_KEY_SCREEN_NAME  = "twiiter_screen_name";
+
 
 
 	/**

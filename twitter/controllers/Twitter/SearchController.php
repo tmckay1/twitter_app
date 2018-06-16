@@ -21,16 +21,6 @@ class SearchController extends BaseController {
 	const ERROR_CODE_UNKNOWN_LOCATION = 3;
 
 
-	/**
-	 * Get empty contents
-	 *
-	 * @return string Controller contents
-	 */
-	public function getContents(){
-		return "";
-	}
-
-
 
 	/**
 	 * Protected accessor used to initialize auth object

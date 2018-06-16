@@ -35,17 +35,6 @@ class UserController extends BaseController {
 
 
 	/**
-	 * Get empty contents
-	 *
-	 * @return string Controller contents
-	 */
-	public function getContents(){
-		return "";
-	}
-
-
-
-	/**
 	 * Protected accessor used to initialize auth object
 	 *
 	 * @return \Twitter\Auth\Twitter\TwitterAuth object used for authorization

@@ -9,6 +9,7 @@ use \Twitter\Views\SingularContentView;
 use \Twitter\Auth\Twitter\TwitterAuth;
 
 use \Twitter\Controllers\BaseController;
+use \Twitter\Controllers\PageInterface;
 
 
 
@@ -17,7 +18,7 @@ use \Twitter\Controllers\BaseController;
  *
  * Controller used to display the home page
  */
-class HomeController extends BaseController {
+class HomeController extends BaseController implements PageInterface{
 
 
 
@@ -217,7 +218,7 @@ class HomeController extends BaseController {
 								<div class='col'>
 									<div class='card' style='width:100%'>
 										<div class='card-body'>
-											<div class='card-title'>Post a Tweet</div>
+											<div class='card-title'>Post a Tweet as @".$this->auth->getScreenName()."</div>
 											<div class='card-text'>$postTweetView</div>
 										</div>
 									</div>

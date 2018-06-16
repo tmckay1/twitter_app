@@ -14,7 +14,6 @@ class Jumbotron extends View{
 
 
 
-
 	/**
 	 * @var $options Additional options needed to draw our view
 	 *

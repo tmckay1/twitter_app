@@ -1,5 +1,5 @@
 /**
- * @class TwitterSearchRequest
+ * @class TwitterRequest
  *
  * This class encapsulates a search request for the twitter API
  */
@@ -30,13 +30,13 @@ class TwitterSearchRequest {
 	/**
 	 * Send the search request
 	 *
-	 * @return TwitterSearchResponse
+	 * @return TwitterResponse
 	 */
 	sendRequest(callback){
 
 		//set default response
-		var error     = new TwitterSearchError(0, "An unexpected error occurred.");
-		this.response = new TwitterSearchResponse(error, null);
+		var error     = new TwitterError(0, "An unexpected error occurred.");
+		this.response = new TwitterResponse(error, null);
 
 		var requestURL  = '/km/fw/Twitter/Search/searchTwitter';
 		var requestData = {
@@ -48,14 +48,14 @@ class TwitterSearchRequest {
 							};
 		$.getJSON(requestURL, requestData, function(data){
 			if(data.STATUS == "OK"){
-				this.response = new TwitterSearchResponse(null, data.MSG);
+				this.response = new TwitterResponse(null, data.MSG);
 			}else{
-				error         = new TwitterSearchError(0, data.MSG);
-				this.response = new TwitterSearchResponse(error, null);
+				error         = new TwitterError(0, data.MSG);
+				this.response = new TwitterResponse(error, null);
 			}
 		}).fail(function(){
-			error         = new TwitterSearchError(0, "Failed to send request, no network connection or the server is unavailable at this time.");
-			this.response = new TwitterSearchResponse(error, null);
+			error         = new TwitterError(0, "Failed to send request, no network connection or the server is unavailable at this time.");
+			this.response = new TwitterResponse(error, null);
 		}).always(function(){
 			callback(this.response);
 		});
@@ -87,7 +87,7 @@ class TwitterTweetEmbedRequest {
 	/**
 	 * Send the search request
 	 *
-	 * @return TwitterSearchResponse
+	 * @return TwitterResponse
 	 */
 	sendRequest(callback){
 
@@ -95,22 +95,22 @@ class TwitterTweetEmbedRequest {
 		if(!tweet.tweetId){ return;}
 
 		//set default response
-		var error     = new TwitterSearchError(0, "An unexpected error occurred.");
-		this.response = new TwitterSearchResponse(error, null);
+		var error     = new TwitterError(0, "An unexpected error occurred.");
+		this.response = new TwitterResponse(error, null);
 
 		var requestURL  = '/km/fw/Twitter/Search/getEmbededTweet';
 		var requestData = {"id": this.tweet.tweetId};
 		
 		$.getJSON(requestURL, requestData, function(data){
 			if(data.STATUS == "OK"){
-				this.response = new TwitterSearchResponse(null, data.MSG);
+				this.response = new TwitterResponse(null, data.MSG);
 			}else{
-				error         = new TwitterSearchError(0, data.MSG);
-				this.response = new TwitterSearchResponse(error, null);
+				error         = new TwitterError(0, data.MSG);
+				this.response = new TwitterResponse(error, null);
 			}
 		}).fail(function(){
-			error         = new TwitterSearchError(0, "Failed to send request, no network connection or the server is unavailable at this time.");
-			this.response = new TwitterSearchResponse(error, null);
+			error         = new TwitterError(0, "Failed to send request, no network connection or the server is unavailable at this time.");
+			this.response = new TwitterResponse(error, null);
 		}).always(function(){
 			callback(this.response, tweet);
 		});

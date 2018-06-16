@@ -1,17 +1,17 @@
 /**
- * @class TwitterSearchResponse
+ * @class TwitterResponse
  *
- * This class encapulates a search response from the twitter API
+ * This class encapulates a response from the twitter API
  */
-class TwitterSearchResponse {
+class TwitterResponse {
 
 
 
 	/**
 	 * Default constructor
 	 *
-	 * @param TwitterSearchError searchError  Error from the response, if any
-	 * @param Object             responseData Raw response data
+	 * @param TwitterError searchError  Error from the response, if any
+	 * @param Object       responseData Raw response data
 	 */
 	constructor(searchError, responseData){
 		this.searchError  = searchError;  
@@ -22,11 +22,11 @@ class TwitterSearchResponse {
 
 
 /**
- * @class TwitterSearchError
+ * @class TwitterError
  *
  * Represents an error received from the API
  */
-class TwitterSearchError {
+class TwitterError {
 
 
 
