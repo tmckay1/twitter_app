@@ -1,6 +1,7 @@
 $(document).ready(function(){
 	setupTwitterSearchForm();
 	setupTwitterPostStatusForm();
+	setupLoadMoreTweets();
 	setupLocation();
 });
 
@@ -210,6 +211,7 @@ function setupLoadMoreTweets(){
 	window.onscroll = function(ev) { //hit bottom of screen
 	    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
 	    	if(tweets.length && canResendEmbedRequest){
+	    		console.log("display");
 				displayMoreTweets();
 		    }
 	    }

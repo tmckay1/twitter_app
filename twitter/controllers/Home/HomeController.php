@@ -51,7 +51,7 @@ class HomeController extends BaseController implements PageInterface{
 		$jumboAttrs = array(
 							"title"    => "Welcome!",
 							"subtitle" => "This is the Twitter Web App Project",
-							"text"     => "Search tweets below",
+							"text"     => $this->auth->isLoggedIn() ? "Post a tweet or search tweets below" : "Search tweets below",
 						);
 		$jumbotron = new JumboTron("welcomeScreen", $jumboAttrs);
 		$jumboView = $jumbotron->getView();

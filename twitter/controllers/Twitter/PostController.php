@@ -57,8 +57,8 @@ class PostController extends BaseController {
 
 		$status = isset($_GET['status']) ? $_GET['status'] : "";
 
-		$statues = $this->connection->post("statuses/update", array("status" => $status));
+		$statuses = $this->connection->post("statuses/update", array("status" => $status));
 
-		return array("payload" => $statues);
+		return array("payload" => $statuses);
 	}
 }
