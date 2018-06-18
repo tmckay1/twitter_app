@@ -46,4 +46,5 @@ iframe.twitter-tweet {
 }
 .carousel-inner img{
   object-fit: cover;
+  min-height: 100%;
 }

@@ -177,7 +177,7 @@ class Page {
 	 * Authorize the user (login/logout). Performs action based on POST parameters
 	 */
 	private function authorize(){
-		
+
 		//log user in if not already logged in
 		if(isset($_POST['signin_user']) && !$this->auth->isLoggedIn()){
 			$this->auth->login();
@@ -198,7 +198,7 @@ class Page {
 	 * Perform page initialization functions
 	 */
 	private function initializePage(){
-		//can start session here
-		session_start();
+		global $debugger;
+		$debugger->debug($_SESSION);
 	}
 }

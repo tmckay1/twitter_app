@@ -52,7 +52,7 @@ class AuthorizationController extends BaseController {
 
 		$requestToken = $this->connection->oauth('oauth/request_token');
 
-		return array("request_token" => $requestToken);
+		return array("request_token" => $requestToken, "http_code" => $this->connection->getLastHttpCode());
 	}
 
 
@@ -66,7 +66,7 @@ class AuthorizationController extends BaseController {
 		$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $requestToken['oauth_token'], $requestToken['oauth_token_secret']);
 		$accessToken = $connection->oauth("oauth/access_token", array("oauth_verifier" => $_REQUEST['oauth_verifier']));
 
-		return array("access_token" => $accessToken);
+		return array("access_token" => $accessToken, "http_code" => $connection->getLastHttpCode());
 	}
 
 

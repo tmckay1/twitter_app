@@ -55,6 +55,15 @@ class TwitterAuth extends Auth{
 
 
 	/**
+	 * Initialize Session in this auth since we store things here
+	 */
+	function __construct(){
+		if(session_status() !== PHP_SESSION_ACTIVE){ session_start();}
+	}
+
+
+
+	/**
 	 * Check if a user is logged in
 	 */
 	public function isLoggedIn(){
@@ -140,7 +149,12 @@ class TwitterAuth extends Auth{
 	 * Get the authorization token 
 	 */
 	public function getAuthToken(){
-		return isset($_SESSION[self::TWITTER_AUTH_KEY_BASE]) && isset($_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_ACCESS_TOKEN]) ? $_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_ACCESS_TOKEN]["oauth_token"] : APP_ACCESS_TOKEN;
+		return isset($_SESSION[self::TWITTER_AUTH_KEY_BASE]) && 
+				isset($_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_ACCESS_TOKEN]) 
+					? 
+					$_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_ACCESS_TOKEN]["oauth_token"] 
+					: 
+					APP_ACCESS_TOKEN;
 	}
 
 
@@ -149,7 +163,12 @@ class TwitterAuth extends Auth{
 	 * Get the authorization secret
 	 */
 	public function getAppSecret(){
-		return isset($_SESSION[self::TWITTER_AUTH_KEY_BASE]) && isset($_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_ACCESS_TOKEN]) ? $_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_ACCESS_TOKEN]["oauth_token_secret"] : APP_ACCESS_TOKEN_SECRET;
+		return isset($_SESSION[self::TWITTER_AUTH_KEY_BASE]) && 
+				isset($_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_ACCESS_TOKEN]) 
+					? 
+					$_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_ACCESS_TOKEN]["oauth_token_secret"] 
+					: 
+					APP_ACCESS_TOKEN_SECRET;
 	}
 
 
@@ -158,7 +177,12 @@ class TwitterAuth extends Auth{
 	 * Get the username of the logged in user
 	 */
 	public function getUserName(){
-		return isset($_SESSION[self::TWITTER_AUTH_KEY_BASE]) && isset($_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_USER_NAME]) ? $_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_USER_NAME] : "";
+		return isset($_SESSION[self::TWITTER_AUTH_KEY_BASE]) && 
+				isset($_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_USER_NAME]) 
+				? 
+				$_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_USER_NAME] 
+				: 
+				"";
 	}
 
 
@@ -167,6 +191,11 @@ class TwitterAuth extends Auth{
 	 * Get the screen name of the logged in user
 	 */
 	public function getScreenName(){
-		return isset($_SESSION[self::TWITTER_AUTH_KEY_BASE]) && isset($_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_SCREEN_NAME]) ? $_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_SCREEN_NAME] : "";
+		return isset($_SESSION[self::TWITTER_AUTH_KEY_BASE]) && 
+				isset($_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_SCREEN_NAME]) 
+				? 
+				$_SESSION[self::TWITTER_AUTH_KEY_BASE][self::TWITTER_AUTH_KEY_SCREEN_NAME] 
+				: 
+				"";
 	}
 }

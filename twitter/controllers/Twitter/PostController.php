@@ -58,7 +58,10 @@ class PostController extends BaseController {
 		$status = isset($_GET['status']) ? $_GET['status'] : "";
 
 		$statuses = $this->connection->post("statuses/update", array("status" => $status));
-
-		return array("payload" => $statuses);
+		$apiPath  = $this->connection->getLastApiPath();
+		$httpCode = $this->connection->getLastHttpCode();
+		$headers  = $this->connection->getLastXHeaders();
+		$body     = $this->connection->getLastBody();
+		return array("payload" => $statuses, "http_code" => $httpCode, "apiPath" => $apiPath, "headers" => $headers, "body" => $body, "authToken" => $this->auth->getAuthToken(), "appSecret" => $this->auth->getAppSecret(), "session");
 	}
 }

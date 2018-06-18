@@ -48,7 +48,12 @@ class TwitterSearchRequest {
 							};
 		$.getJSON(requestURL, requestData, function(data){
 			if(data.STATUS == "OK"){
-				this.response = new TwitterResponse(null, data.MSG);
+				if(!data.MSG.http_code || data.MSG.http_code == 200){
+					this.response = new TwitterResponse(null, data.MSG);
+				}else{
+					error         = new TwitterError(0, "Failed to send request, no network connection or the server is unavailable at this time.");
+					this.response = new TwitterResponse(error, null);
+				}
 			}else{
 				error         = new TwitterError(0, data.MSG);
 				this.response = new TwitterResponse(error, null);
@@ -103,7 +108,12 @@ class TwitterTweetEmbedRequest {
 		
 		$.getJSON(requestURL, requestData, function(data){
 			if(data.STATUS == "OK"){
-				this.response = new TwitterResponse(null, data.MSG);
+				if(!data.MSG.http_code || data.MSG.http_code == 200){
+					this.response = new TwitterResponse(null, data.MSG);
+				}else{
+					error         = new TwitterError(0, "Failed to send request, no network connection or the server is unavailable at this time.");
+					this.response = new TwitterResponse(error, null);
+				}
 			}else{
 				error         = new TwitterError(0, data.MSG);
 				this.response = new TwitterResponse(error, null);
@@ -157,7 +167,12 @@ class TwitterPostStatusRequest {
 		
 		$.getJSON(requestURL, requestData, function(data){
 			if(data.STATUS == "OK"){
-				this.response = new TwitterResponse(null, data.MSG);
+				if(!data.MSG.http_code || data.MSG.http_code == 200){
+					this.response = new TwitterResponse(null, data.MSG);
+				}else{
+					error         = new TwitterError(0, "Failed to send request, no network connection or the server is unavailable at this time.");
+					this.response = new TwitterResponse(error, null);
+				}
 			}else{
 				error         = new TwitterError(0, data.MSG);
 				this.response = new TwitterResponse(error, null);

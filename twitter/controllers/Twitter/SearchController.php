@@ -89,7 +89,7 @@ class SearchController extends BaseController {
 		$connection = new \Abraham\TwitterOAuth\TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $this->auth->getAuthToken(), $this->auth->getAppSecret());
 		$statuses   = $connection->get("search/tweets", $searchParams);
 
-		return array("payload" => $statuses, "error" => null);
+		return array("payload" => $statuses, "http_code" => $connection->getLastHttpCode(), "error" => null);
 	}
 
 
@@ -109,7 +109,7 @@ class SearchController extends BaseController {
 		$connection = new \Abraham\TwitterOAuth\TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $this->auth->getAuthToken(), $this->auth->getAppSecret());
 		$statuses   = $connection->get("statuses/oembed", ["id" => $id, "omit_script" => true]);
 
-		return array("payload" => $statuses, "error" => null);
+		return array("payload" => $statuses, "http_code" => $connection->getLastHttpCode(), "error" => null);
 	}
 
 }

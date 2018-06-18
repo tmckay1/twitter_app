@@ -54,6 +54,6 @@ class UserController extends BaseController {
 
 		$profileData = $this->connection->get('account/verify_credentials', array('tweet_mode' => 'extended', 'include_entities' => 'true'));
 
-		return array("profile_data" => $profileData);
+		return array("profile_data" => $profileData, "http_code" => $this->connection->getLastHttpCode());
 	}
 }

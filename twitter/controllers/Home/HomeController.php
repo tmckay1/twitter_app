@@ -63,7 +63,7 @@ class HomeController extends BaseController implements PageInterface{
 
 		//write out the form to post a tweet
 		$postTweetHtml = $this->getPostTweetHtml();
-
+		
 		//write out form to search twitter api
 		$formInputs  = array(
 							array(//first row - div to hold any error messages
